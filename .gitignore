@@ -42,8 +42,8 @@ ENV/
 
 # Excel reports
 *.xlsx
-report.xlsx
-
+reports.xlsx
+.env.example
 # Data directory
 data/
 
