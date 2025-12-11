@@ -51,3 +51,8 @@ data/
 .DS_Store
 Thumbs.db
 
+# Scheduler files
+.scheduler_daemon.lock
+_prompt_main_menu.py
+tasks.json
+

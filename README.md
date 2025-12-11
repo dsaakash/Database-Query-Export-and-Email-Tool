@@ -19,6 +19,9 @@ All documentation is available in the [`docs/`](docs/) directory:
 - **[docs/QUICK_START.md](docs/QUICK_START.md)** - Get started in 5 minutes
 - **[docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)** - Complete setup and usage guide
 - **[docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)** - Gmail & Outlook email configuration
+- **[docs/SCHEDULER_GUIDE.md](docs/SCHEDULER_GUIDE.md)** - Task scheduler setup and deployment
+- **[docs/WINDOWS_TASK_SCHEDULER_SETUP.md](docs/WINDOWS_TASK_SCHEDULER_SETUP.md)** - Windows 11 Task Scheduler setup (recommended for Windows)
+- **[docs/SCHEDULER_QUICK_REFERENCE.md](docs/SCHEDULER_QUICK_REFERENCE.md)** - Quick scheduler commands
 - **[docs/GUIDES_INDEX.md](docs/GUIDES_INDEX.md)** - Documentation index
 
 ## ✨ Features
@@ -30,6 +33,7 @@ All documentation is available in the [`docs/`](docs/) directory:
 - ✅ **Multiple Recipients** - Send to multiple email addresses (TO and CC)
 - ✅ **Table Discovery** - Automatically lists available tables
 - ✅ **Sample Tables** - Create sample tables with dummy data
+- ✅ **Task Scheduler** - Schedule automated queries and email reports
 - ✅ **Clean Architecture** - SOLID principles, maintainable code
 
 ## 🏗️ Project Structure
@@ -77,6 +81,8 @@ Email settings are prompted interactively (not from .env). You'll be asked for:
 
 ## 📖 Usage Example
 
+### Interactive Mode
+
 ```
 1. Run: python main.py
 2. Enter PostgreSQL database URL
@@ -84,6 +90,36 @@ Email settings are prompted interactively (not from .env). You'll be asked for:
 4. Choose export format (Excel/PDF)
 5. Optionally send email with attachments
 ```
+
+### Scheduled Tasks (New! 🎉)
+
+Schedule automated database queries and email reports:
+
+```bash
+# Add a scheduled task
+python manage_tasks.py add
+
+# List all tasks
+python manage_tasks.py list
+
+# Windows 11: Use Windows Task Scheduler (recommended)
+# See: docs/WINDOWS_TASK_SCHEDULER_SETUP.md
+
+# Or start scheduler daemon (runs continuously)
+python scheduler_daemon.py
+```
+
+**Features:**
+- ✅ Schedule queries using cron, intervals, or one-time
+- ✅ Automatic email reports with Excel/PDF attachments
+- ✅ Task management CLI (add, list, enable, disable, delete)
+- ✅ Execution history and error tracking
+- ✅ **Windows Task Scheduler integration** (Windows 11)
+- ✅ Deploy to cloud or run locally
+
+**Windows Users:** Use Windows Task Scheduler - no daemon needed! See [docs/WINDOWS_TASK_SCHEDULER_SETUP.md](docs/WINDOWS_TASK_SCHEDULER_SETUP.md)
+
+See [docs/SCHEDULER_GUIDE.md](docs/SCHEDULER_GUIDE.md) for complete scheduler documentation.
 
 ## 🔄 How It Works
 

@@ -439,3 +439,240 @@ class PromptService:
             else:
                 print("Please enter 'yes' or 'no'.")
 
+    @staticmethod
+    def prompt_table_creation_options() -> dict:
+        """Prompt user for table creation options.
+
+        Returns:
+            Dictionary with selected option and details
+        """
+        print("\n" + "="*60)
+        print("Table Creation Options:")
+        print("="*60)
+        print("1. Create 'users' table with dummy data")
+        print("2. Create a table using custom SQL query")
+        print("3. Add a column to an existing table")
+        print("4. Skip table creation")
+        print("="*60)
+
+        while True:
+            choice = input("Enter your choice (1-4): ").strip()
+            if choice == "1":
+                table_name = input("Enter table name (default: users): ").strip()
+                return {
+                    "action": "create_users",
+                    "table_name": table_name if table_name else "users"
+                }
+            elif choice == "2":
+                print("\nEnter your CREATE TABLE SQL query:")
+                print("(Type 'END' on a new line to finish)")
+                query_lines = []
+                while True:
+                    line = input()
+                    if line.strip().upper() == "END":
+                        break
+                    query_lines.append(line)
+                ddl_query = "\n".join(query_lines).strip()
+                if not ddl_query:
+                    print("Query cannot be empty. Please try again.")
+                    return PromptService.prompt_table_creation_options()
+                return {
+                    "action": "create_custom",
+                    "ddl_query": ddl_query
+                }
+            elif choice == "3":
+                table_name = input("Enter table name: ").strip()
+                if not table_name:
+                    print("Table name cannot be empty. Please try again.")
+                    return PromptService.prompt_table_creation_options()
+                
+                column_name = input("Enter column name: ").strip()
+                if not column_name:
+                    print("Column name cannot be empty. Please try again.")
+                    return PromptService.prompt_table_creation_options()
+                
+                print("\nEnter column definition (e.g., VARCHAR(100), INTEGER, TIMESTAMP DEFAULT CURRENT_TIMESTAMP):")
+                print("Examples:")
+                print("  - VARCHAR(100)")
+                print("  - INTEGER")
+                print("  - DECIMAL(10, 2)")
+                print("  - TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                print("  - BOOLEAN DEFAULT FALSE")
+                column_definition = input("Column definition: ").strip()
+                if not column_definition:
+                    print("Column definition cannot be empty. Please try again.")
+                    return PromptService.prompt_table_creation_options()
+                
+                return {
+                    "action": "add_column",
+                    "table_name": table_name,
+                    "column_name": column_name,
+                    "column_definition": column_definition
+                }
+            elif choice == "4":
+                return {"action": "skip"}
+            else:
+                print("Invalid choice. Please enter 1, 2, 3, or 4.")
+
+    @staticmethod
+    def prompt_save_as_scheduled_task() -> bool:
+        """Prompt user if they want to save current query as a scheduled task.
+
+        Returns:
+            True if user wants to save as scheduled task, False otherwise
+        """
+        print("\n" + "="*60)
+        print("Schedule This Task:")
+        print("="*60)
+        print("Would you like to schedule this query to run automatically?")
+        print("The task will use the same query, export settings, and email configuration.")
+        print("You'll configure when it should run (daily, hourly, etc.)")
+        print("After scheduling, the email will be sent now, and future emails will")
+        print("be sent automatically at the scheduled time.")
+        print("="*60)
+
+        while True:
+            choice = input("Schedule this task? (yes/no, default: no): ").strip().lower()
+            if choice in ["yes", "y"]:
+                return True
+            elif choice in ["no", "n", ""]:
+                return False
+            else:
+                print("Please enter 'yes' or 'no'.")
+
+    @staticmethod
+    def prompt_schedule_for_task() -> dict:
+        """Prompt user for schedule configuration when saving a task from main.py.
+
+        Returns:
+            Dictionary with schedule_type and schedule_config
+        """
+        return PromptService.prompt_schedule_type()
+
+    @staticmethod
+    def prompt_schedule_type() -> dict:
+        """Prompt user for schedule type and configuration.
+
+        Returns:
+            Dictionary with schedule_type and schedule_config
+        """
+        print("\n" + "="*60)
+        print("Schedule Type:")
+        print("="*60)
+        print("1. Cron (e.g., daily at 9 AM, weekly on Monday, etc.)")
+        print("2. Interval (e.g., every 1 hour, every 30 minutes, etc.)")
+        print("3. Once (run at specific date/time)")
+        print("="*60)
+
+        while True:
+            choice = input("Enter schedule type (1-3): ").strip()
+            
+            if choice == "1":
+                return PromptService.prompt_cron_schedule()
+            elif choice == "2":
+                return PromptService.prompt_interval_schedule()
+            elif choice == "3":
+                return PromptService.prompt_once_schedule()
+            else:
+                print("Invalid choice. Please enter 1, 2, or 3.")
+
+    @staticmethod
+    def prompt_cron_schedule() -> dict:
+        """Prompt for cron schedule configuration."""
+        print("\nCron Schedule Configuration:")
+        print("Leave blank to use '*' (every)")
+        print("Examples:")
+        print("  - Daily at 9 AM: hour=9, minute=0")
+        print("  - Every Monday at 8:30 AM: day_of_week='mon', hour=8, minute=30")
+        print("  - First day of month at midnight: day=1, hour=0, minute=0")
+        
+        config = {}
+        
+        year = input("Year (e.g., 2024, or * for every): ").strip()
+        if year and year != "*":
+            config["year"] = year
+        
+        month = input("Month (1-12, or * for every): ").strip()
+        if month and month != "*":
+            config["month"] = int(month) if month.isdigit() else month
+        
+        day = input("Day of month (1-31, or * for every): ").strip()
+        if day and day != "*":
+            config["day"] = int(day) if day.isdigit() else day
+        
+        day_of_week = input("Day of week (mon/tue/wed/thu/fri/sat/sun, or * for every): ").strip().lower()
+        if day_of_week and day_of_week != "*":
+            config["day_of_week"] = day_of_week
+        
+        hour = input("Hour (0-23, or * for every): ").strip()
+        if hour and hour != "*":
+            config["hour"] = int(hour) if hour.isdigit() else hour
+        
+        minute = input("Minute (0-59, or * for every): ").strip()
+        if minute and minute != "*":
+            config["minute"] = int(minute) if minute.isdigit() else minute
+        
+        second = input("Second (0-59, default: 0): ").strip()
+        if second:
+            config["second"] = int(second) if second.isdigit() else 0
+        else:
+            config["second"] = 0
+        
+        return {"schedule_type": "cron", "schedule_config": config}
+
+    @staticmethod
+    def prompt_interval_schedule() -> dict:
+        """Prompt for interval schedule configuration."""
+        print("\nInterval Schedule Configuration:")
+        print("Enter values for the interval (leave 0 to skip)")
+        
+        config = {}
+        
+        weeks = input("Weeks (0 to skip): ").strip()
+        if weeks and weeks.isdigit() and int(weeks) > 0:
+            config["weeks"] = int(weeks)
+        
+        days = input("Days (0 to skip): ").strip()
+        if days and days.isdigit() and int(days) > 0:
+            config["days"] = int(days)
+        
+        hours = input("Hours (0 to skip): ").strip()
+        if hours and hours.isdigit() and int(hours) > 0:
+            config["hours"] = int(hours)
+        
+        minutes = input("Minutes (0 to skip): ").strip()
+        if minutes and minutes.isdigit() and int(minutes) > 0:
+            config["minutes"] = int(minutes)
+        
+        seconds = input("Seconds (0 to skip): ").strip()
+        if seconds and seconds.isdigit() and int(seconds) > 0:
+            config["seconds"] = int(seconds)
+        
+        if not config:
+            print("⚠ At least one interval value must be provided. Using 1 hour as default.")
+            config["hours"] = 1
+        
+        return {"schedule_type": "interval", "schedule_config": config}
+
+    @staticmethod
+    def prompt_once_schedule() -> dict:
+        """Prompt for one-time schedule configuration."""
+        print("\nOne-Time Schedule Configuration:")
+        print("Enter date and time in format: YYYY-MM-DD HH:MM:SS")
+        print("Example: 2024-12-25 09:00:00")
+        
+        while True:
+            date_str = input("Date and time: ").strip()
+            try:
+                from datetime import datetime
+                run_date = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+                if run_date < datetime.now():
+                    print("⚠ Warning: Date is in the past. Task will not run.")
+                return {
+                    "schedule_type": "once",
+                    "schedule_config": {"run_date": run_date.isoformat()}
+                }
+            except ValueError:
+                print("Invalid format. Please use: YYYY-MM-DD HH:MM:SS")
+
+

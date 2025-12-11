@@ -247,3 +247,130 @@ class PostgreSQLAdapter(DatabaseAdapter):
         except Exception as e:
             raise RuntimeError(f"Failed to create sample table: {str(e)}") from e
 
+    def create_users_table(self, table_name: str = "users") -> None:
+        """Create users table with dummy data.
+
+        Args:
+            table_name: Name of the table to create (default: users)
+        """
+        if not self.engine:
+            raise RuntimeError("Database not connected. Call connect() first.")
+
+        try:
+            # Check if table already exists
+            if self.table_exists(table_name):
+                print(f"⚠ Table '{table_name}' already exists. Skipping creation.")
+                return
+
+            with self.engine.begin() as conn:
+                # Create users table
+                create_table_sql = text(f"""
+                    CREATE TABLE {table_name} (
+                        id SERIAL PRIMARY KEY,
+                        username VARCHAR(50) UNIQUE NOT NULL,
+                        email VARCHAR(100) UNIQUE NOT NULL,
+                        first_name VARCHAR(50) NOT NULL,
+                        last_name VARCHAR(50) NOT NULL,
+                        age INTEGER,
+                        phone VARCHAR(20),
+                        address VARCHAR(200),
+                        city VARCHAR(50),
+                        country VARCHAR(50) DEFAULT 'USA',
+                        is_active BOOLEAN DEFAULT TRUE,
+                        registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP
+                    )
+                """)
+                conn.execute(create_table_sql)
+
+                # Insert sample user data
+                users_data = [
+                    ("johndoe", "john.doe@example.com", "John", "Doe", 30, "+1-555-0101", "123 Main St", "New York", "USA", True),
+                    ("janesmith", "jane.smith@example.com", "Jane", "Smith", 28, "+1-555-0102", "456 Oak Ave", "Los Angeles", "USA", True),
+                    ("bobjohnson", "bob.johnson@example.com", "Bob", "Johnson", 35, "+1-555-0103", "789 Pine Rd", "Chicago", "USA", True),
+                    ("alicewilliams", "alice.williams@example.com", "Alice", "Williams", 32, "+1-555-0104", "321 Elm St", "Houston", "USA", True),
+                    ("charliebrown", "charlie.brown@example.com", "Charlie", "Brown", 27, "+1-555-0105", "654 Maple Dr", "Phoenix", "USA", True),
+                    ("dianawilson", "diana.wilson@example.com", "Diana", "Wilson", 29, "+1-555-0106", "987 Cedar Ln", "Philadelphia", "USA", True),
+                    ("edwarddavis", "edward.davis@example.com", "Edward", "Davis", 41, "+1-555-0107", "147 Birch Way", "San Antonio", "USA", True),
+                    ("frankmiller", "frank.miller@example.com", "Frank", "Miller", 33, "+1-555-0108", "258 Spruce Ct", "San Diego", "USA", False),
+                    ("gracelee", "grace.lee@example.com", "Grace", "Lee", 26, "+1-555-0109", "369 Willow Pl", "Dallas", "USA", True),
+                    ("henrygarcia", "henry.garcia@example.com", "Henry", "Garcia", 38, "+1-555-0110", "741 Ash Blvd", "San Jose", "USA", True),
+                ]
+
+                insert_sql = text(f"""
+                    INSERT INTO {table_name} (username, email, first_name, last_name, age, phone, address, city, country, is_active)
+                    VALUES (:username, :email, :first_name, :last_name, :age, :phone, :address, :city, :country, :is_active)
+                """)
+
+                for user_data in users_data:
+                    conn.execute(insert_sql, {
+                        "username": user_data[0],
+                        "email": user_data[1],
+                        "first_name": user_data[2],
+                        "last_name": user_data[3],
+                        "age": user_data[4],
+                        "phone": user_data[5],
+                        "address": user_data[6],
+                        "city": user_data[7],
+                        "country": user_data[8],
+                        "is_active": user_data[9]
+                    })
+
+            print(f"✓ Created table '{table_name}' with {len(users_data)} user records")
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to create users table: {str(e)}") from e
+
+    def execute_ddl_query(self, ddl_query: str) -> None:
+        """Execute DDL (Data Definition Language) queries like CREATE TABLE, ALTER TABLE.
+
+        Args:
+            ddl_query: DDL SQL query string (CREATE TABLE, ALTER TABLE, etc.)
+
+        Raises:
+            RuntimeError: If not connected or DDL query fails
+        """
+        if not self.engine:
+            raise RuntimeError("Database not connected. Call connect() first.")
+
+        # Validate that it's a DDL query (basic check)
+        ddl_query_upper = ddl_query.strip().upper()
+        valid_ddl_keywords = ["CREATE", "ALTER", "DROP", "TRUNCATE", "RENAME"]
+        
+        if not any(ddl_query_upper.startswith(keyword) for keyword in valid_ddl_keywords):
+            raise ValueError(
+                f"Invalid DDL query. Must start with one of: {', '.join(valid_ddl_keywords)}"
+            )
+
+        try:
+            with self.engine.begin() as conn:
+                conn.execute(text(ddl_query))
+            print(f"✓ DDL query executed successfully")
+        except Exception as e:
+            raise RuntimeError(f"DDL query execution failed: {str(e)}") from e
+
+    def add_column(self, table_name: str, column_name: str, column_definition: str) -> None:
+        """Add a column to an existing table.
+
+        Args:
+            table_name: Name of the table
+            column_name: Name of the column to add
+            column_definition: Column definition (e.g., 'VARCHAR(100)', 'INTEGER', 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP')
+
+        Raises:
+            RuntimeError: If table doesn't exist or column addition fails
+        """
+        if not self.engine:
+            raise RuntimeError("Database not connected. Call connect() first.")
+
+        # Check if table exists
+        if not self.table_exists(table_name):
+            raise RuntimeError(f"Table '{table_name}' does not exist.")
+
+        try:
+            ddl_query = f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}"
+            self.execute_ddl_query(ddl_query)
+            print(f"✓ Added column '{column_name}' to table '{table_name}'")
+        except Exception as e:
+            raise RuntimeError(f"Failed to add column: {str(e)}") from e
+
