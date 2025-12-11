@@ -1,12 +1,8 @@
-# Database Connection and Excel Export Tool
+# PostgreSQL Query, Export, and Email Tool
 
-Python tools to connect to databases (Oracle, PostgreSQL, SQLite), query tables, and export results to Excel/PDF files with email support.
+An interactive Python application for connecting to PostgreSQL databases, querying tables, exporting to Excel/PDF, and sending email reports.
 
-## 🎯 New Interactive Tool (Recommended)
-
-**`main.py`** - Interactive multi-database tool with clean architecture
-
-### Quick Start
+## 🚀 Quick Start
 
 ```bash
 # Install dependencies
@@ -16,445 +12,505 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### 📚 Documentation
+## 📚 Documentation
 
-- **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Complete setup and usage guide
-- **[EMAIL_SETUP.md](EMAIL_SETUP.md)** - Gmail & Outlook email configuration
+All documentation is available in the [`docs/`](docs/) directory:
 
-### Features
+- **[docs/QUICK_START.md](docs/QUICK_START.md)** - Get started in 5 minutes
+- **[docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)** - Complete setup and usage guide
+- **[docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)** - Gmail & Outlook email configuration
+- **[docs/GUIDES_INDEX.md](docs/GUIDES_INDEX.md)** - Documentation index
 
-- ✅ **Multi-Database Support** - Oracle, PostgreSQL, SQLite
+## ✨ Features
+
+- ✅ **PostgreSQL Support** - Connect to PostgreSQL databases
 - ✅ **Interactive Prompts** - Step-by-step guided workflow
 - ✅ **Excel & PDF Export** - Export query results to multiple formats
 - ✅ **Email Functionality** - Send reports via Gmail or Outlook
-- ✅ **Multiple Recipients** - Send to multiple email addresses
+- ✅ **Multiple Recipients** - Send to multiple email addresses (TO and CC)
+- ✅ **Table Discovery** - Automatically lists available tables
+- ✅ **Sample Tables** - Create sample tables with dummy data
 - ✅ **Clean Architecture** - SOLID principles, maintainable code
 
----
+## 🏗️ Project Structure
 
-## 📧 Email Setup Guides
-
-**Need to set up email?** Follow these guides:
-
-- **[EMAIL_SETUP.md](EMAIL_SETUP.md)** - Step-by-step Gmail & Outlook setup
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md#email-setup)** - Complete email configuration guide
-
-**Quick Links:**
-- [Gmail App Password Setup](EMAIL_SETUP.md#-gmail-setup)
-- [Outlook App Password Setup](EMAIL_SETUP.md#-outlook-setup)
-
----
-
-## Available Tools
-
-- **main.py** - ⭐ **NEW** Interactive multi-database tool (Oracle, PostgreSQL, SQLite)
-- **main1.py** - Legacy Oracle 11g tool (command-line)
-
----
-
-## SQLite Tool (main.py)
-
-A single-file Python tool to connect to SQLite databases, query tables, and export results to Excel files.
-
-## 🚀 Quick Start
-
-### Step 1: Install Dependencies
-
-```bash
-# Create virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install required packages
-pip install -r requirements.txt
+```
+oracle_db_connection/
+├── main.py                 # Main application entry point
+├── src/                    # Source code
+│   ├── core/              # Core interfaces and config
+│   ├── adapters/         # Database adapters (PostgreSQL)
+│   └── services/         # Business logic services
+├── docs/                  # Documentation
+│   ├── QUICK_START.md
+│   ├── SETUP_GUIDE.md
+│   ├── EMAIL_SETUP.md
+│   └── GUIDES_INDEX.md
+├── env.example           # Example environment configuration
+├── requirements.txt      # Python dependencies
+└── README.md            # This file
 ```
 
-### Step 2: Create Sample Database (Optional)
+## 📋 Requirements
 
-If you don't have a SQLite database yet, create one with sample data:
-
-```bash
-python main.py init
-```
-
-This creates `data/sample.db` with a `sample_table` containing 5 sample records.
-
-**Custom database:**
-```bash
-python main.py init --db-path data/my_database.db --table-name my_table
-```
-
-### Step 3: Configure Database Connection
-
-Edit the `.env` file in the project root:
-
-```env
-database_url=sqlite:///data/sample.db
-port=
-```
-
-**Supported SQLite URL formats:**
-- `sqlite:///data/sample.db` (recommended)
-- `sqlite:data/sample.db`
-- `data/sample.db` (direct file path)
-
-### Step 4: Run the Export
-
-Query a table and export to Excel:
-
-```bash
-python main.py export --table sample_table --output report.xlsx
-```
-
-**That's it!** The Excel file will be created in the project root.
-
----
-
-## 📖 How to Run
-
-### Command Structure
-
-```bash
-python main.py <command> [options]
-```
-
-### Available Commands
-
-#### 1. Initialize Database (`init`)
-
-Create a new SQLite database with a sample table:
-
-```bash
-python main.py init [--db-path PATH] [--table-name NAME]
-```
-
-**Options:**
-- `--db-path`: Path to SQLite database file (default: `data/sample.db`)
-- `--table-name`: Name of the sample table (default: `sample_table`)
-
-**Examples:**
-```bash
-# Use defaults
-python main.py init
-
-# Custom path and table name
-python main.py init --db-path data/my_db.db --table-name employees
-```
-
-#### 2. Export Table (`export`)
-
-Query a database table and export to Excel:
-
-```bash
-python main.py export --table TABLE_NAME [--output PATH] [--env-file PATH]
-```
-
-**Options:**
-- `--table`: Name of the table to query (required)
-- `--output`: Output Excel file path (default: `report.xlsx`)
-- `--env-file`: Custom `.env` file path (default: `.env` in project root)
-
-**Examples:**
-```bash
-# Basic export
-python main.py export --table sample_table
-
-# Custom output location
-python main.py export --table sample_table --output exports/my_report.xlsx
-
-# Use custom .env file
-python main.py export --table sample_table --env-file .env.production
-```
-
----
-
-## 📋 Complete Workflow Example
-
-Here's a complete example from start to finish:
-
-```bash
-# 1. Navigate to project directory
-cd oracle_db_connection
-
-# 2. Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Create sample database
-python main.py init
-
-# 5. Verify .env file has correct database URL
-cat .env
-# Should show: database_url=sqlite:///data/sample.db
-
-# 6. Export table to Excel
-python main.py export --table sample_table --output report.xlsx
-
-# 7. Check the output
-ls -lh report.xlsx
-```
-
-**Expected output:**
-```
-✓ Successfully exported to: /path/to/oracle_db_connection/report.xlsx
-```
-
----
+- Python 3.8+
+- PostgreSQL database access
+- See [requirements.txt](requirements.txt) for Python packages
 
 ## 🔧 Configuration
 
-### Environment Variables (.env file)
+### Database URL
 
-Create or edit `.env` in the project root:
+Enter PostgreSQL database URL when prompted, or configure in `.env`:
 
 ```env
-# Database connection URL
-# For SQLite, use one of these formats:
-database_url=sqlite:///data/sample.db
-# OR
-database_url=sqlite:data/sample.db
-# OR
-database_url=data/sample.db
-
-# Port (not used for SQLite, can be left empty)
-port=
+POSTGRESQL_DATABASE_URL=postgresql://username:password@host:5432/database
 ```
 
-### Database URL Formats
+### Email Configuration
 
-The tool automatically detects SQLite databases from these URL patterns:
+Email settings are prompted interactively (not from .env). You'll be asked for:
+- SMTP Email (e.g., your_email@gmail.com)
+- SMTP Password (App Password)
+- SMTP Host (default: smtp.gmail.com)
+- SMTP Port (default: 587)
 
-| Format | Example | Description |
-|--------|---------|-------------|
-| `sqlite:///path` | `sqlite:///data/db.db` | Standard SQLite URL |
-| `sqlite:path` | `sqlite:data/db.db` | Alternative format |
-| Direct path | `data/db.db` | File path without scheme |
-
----
-
-## 📁 Project Structure
+## 📖 Usage Example
 
 ```
-oracle_db_connection/
-├── main.py              # Single-file application (all code here!)
-├── .env                 # Configuration file
-├── requirements.txt     # Python dependencies
-├── data/                # SQLite database files (created automatically)
-├── README.md            # This file
-└── .gitignore          # Git ignore rules
+1. Run: python main.py
+2. Enter PostgreSQL database URL
+3. Select table or enter custom query
+4. Choose export format (Excel/PDF)
+5. Optionally send email with attachments
 ```
 
-**Note:** This is a single-file application. All functionality is in `main.py`.
+## 🔄 How It Works
 
----
+### Application Workflow
 
-## ✅ What It Does
+The application follows a sequential, interactive workflow:
 
-1. **Connects** to your SQLite database using the URL from `.env`
-2. **Queries** the specified table with `SELECT * FROM table_name`
-3. **Exports** all records to an Excel file (`.xlsx` format)
-4. **Handles** errors gracefully with clear error messages
+```
+1. Initialization
+   ├── Load configuration from .env (optional)
+   ├── Initialize PromptService for user interaction
+   └── Initialize QueryService for orchestration
 
----
+2. Database Connection
+   ├── Prompt for PostgreSQL database URL (or use from .env)
+   ├── Create database adapter via Factory pattern
+   ├── Test connection with status feedback
+   ├── List available tables in database
+   └── Optionally create sample table if none exist
 
-## 🐛 Troubleshooting
+3. Query Input
+   ├── Display available tables (numbered list)
+   ├── User selects table by number OR enters custom SQL query
+   └── Support for multi-line queries (type 'END' to finish)
 
-### Error: "database_url not found in environment"
-**Solution:** Make sure `.env` file exists in the project root and contains `database_url=...`
+4. Export Configuration
+   ├── Choose export format (Excel only, PDF only, or both)
+   ├── Specify output file paths
+   └── Optionally configure email settings
 
-### Error: "unable to open database file"
-**Solution:** 
-- Check that the database file path in `.env` is correct
-- Ensure the database file exists
-- Use absolute path if relative path doesn't work
+5. Execution & Export
+   ├── Execute SQL query via database adapter
+   ├── Convert results to pandas DataFrame
+   ├── Export to Excel (if selected)
+   ├── Export to PDF (if selected)
+   └── Send email with attachments (if selected)
 
-### Error: "Table 'X' is empty or does not exist"
-**Solution:**
-- Verify the table name is spelled correctly
-- Check that the table exists in your database
-- Use SQLite browser to inspect your database: `sqlite3 data/sample.db "SELECT name FROM sqlite_master WHERE type='table';"`
-
-### Error: "Cannot export empty query result"
-**Solution:** The table exists but has no data. Add some records to the table first.
-
-### Import Errors
-**Solution:** Make sure all dependencies are installed:
-```bash
-pip install -r requirements.txt
+6. Cleanup
+   └── Close database connections
 ```
 
-### Command Not Found
-**Solution:** Make sure you're using the correct command syntax:
-```bash
-# Correct
-python main.py export --table sample_table
+### Data Flow
 
-# Wrong
-python main.py --table sample_table  # Missing 'export' command
+```
+User Input → PromptService → QueryService → DatabaseAdapter
+                                              ↓
+                                         DataFrame
+                                              ↓
+                                    ExportService (Excel/PDF)
+                                              ↓
+                                    EmailService (if enabled)
+                                              ↓
+                                         Output Files/Email
 ```
 
----
+## 🏛️ System Design
 
-## 📦 Requirements
+### Architecture Overview
 
-- Python 3.8+
-- pandas >= 2.0.0
-- openpyxl >= 3.1.0
-- python-dotenv >= 1.0.0
+The application follows **Clean Architecture** principles with clear separation of concerns:
 
----
-
-## 💡 Tips
-
-1. **Use virtual environments** to avoid dependency conflicts
-2. **Check your database** first with a SQLite browser tool
-3. **Use absolute paths** in `.env` if relative paths cause issues
-4. **Organize exports** by creating subdirectories: `exports/reports/`
-5. **Single file** - All code is in `main.py`, easy to understand and modify
-
----
-
-## 🔍 Verify Your Setup
-
-Test that everything works:
-
-```bash
-# 1. Check Python version
-python3 --version  # Should be 3.8+
-
-# 2. Check dependencies
-pip list | grep -E "(pandas|openpyxl|python-dotenv)"
-
-# 3. Test database initialization
-python main.py init --db-path data/test.db
-
-# 4. Test export
-python main.py export --table sample_table --output test.xlsx
-
-# 5. Verify Excel file
-python3 -c "import pandas as pd; df = pd.read_excel('test.xlsx'); print(f'✓ {len(df)} rows exported')"
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Presentation Layer                    │
+│                      (main.py)                           │
+│  - User interaction orchestration                        │
+│  - Input validation and prompting                        │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│                    Application Layer                     │
+│                  (src/services/)                        │
+│  - QueryService: Orchestrates query execution           │
+│  - ExportService: Handles Excel/PDF export              │
+│  - EmailService: Manages email sending                  │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│                    Domain Layer                         │
+│                   (src/core/)                           │
+│  - DatabaseAdapter: Abstract interface                   │
+│  - Config: Configuration management                     │
+│  - Prompts: User interaction service                    │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│                  Infrastructure Layer                    │
+│              (src/adapters/database/)                    │
+│  - PostgreSQLAdapter: Database implementation          │
+│  - DatabaseAdapterFactory: Adapter creation            │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│                  External Systems                        │
+│  - PostgreSQL Database                                   │
+│  - SMTP Email Server (Gmail/Outlook)                     │
+└─────────────────────────────────────────────────────────┘
 ```
 
----
+### Design Principles
 
-## 📝 Usage Examples
+1. **Dependency Inversion**: High-level modules depend on abstractions (interfaces), not concrete implementations
+2. **Single Responsibility**: Each class has one clear purpose
+3. **Open/Closed**: Open for extension (new adapters), closed for modification
+4. **Separation of Concerns**: Clear boundaries between layers
+5. **Factory Pattern**: Centralized adapter creation
+6. **Adapter Pattern**: Unified interface for different database types
 
-### Example 1: Quick Start with Defaults
-```bash
-# Initialize database
-python main.py init
+## 📐 High Level Design (HLD)
 
-# Export to Excel
-python main.py export --table sample_table
+### Component Diagram
+
+```
+┌──────────────┐
+│   main.py    │
+│  (Orchestrator)│
+└──────┬───────┘
+       │
+       ├─────────────────┐
+       │                 │
+┌──────▼──────┐   ┌──────▼──────┐
+│PromptService│   │QueryService │
+│             │   │             │
+│- prompt_*() │   │- execute_*()│
+└─────────────┘   └──────┬──────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+   ┌──────▼──────┐ ┌─────▼─────┐ ┌─────▼─────┐
+   │Database     │ │Export     │ │Email      │
+   │Adapter      │ │Service    │ │Service    │
+   │             │ │           │ │           │
+   │- connect()  │ │- export() │ │- send_*() │
+   │- execute_*()│ └───────────┘ └───────────┘
+   └──────┬──────┘
+          │
+   ┌──────▼──────┐
+   │PostgreSQL   │
+   │Database     │
+   └─────────────┘
 ```
 
-### Example 2: Custom Database and Table
-```bash
-# Create custom database
-python main.py init --db-path data/company.db --table-name employees
+### Sequence Diagram
 
-# Update .env
-echo "database_url=sqlite:///data/company.db" > .env
-
-# Export
-python main.py export --table employees --output employees.xlsx
+```
+User    main.py    PromptService  QueryService  DatabaseAdapter  ExportService  EmailService
+ │         │            │              │              │                │              │
+ │         │──init──────>│              │              │                │              │
+ │         │            │              │              │                │              │
+ │         │<─prompt─────│              │              │                │              │
+ │<────────│             │              │              │                │              │
+ │────────>│             │              │              │                │              │
+ │         │──create────>│              │              │                │              │
+ │         │            │              │              │                │              │
+ │         │            │              │──execute─────>│                │              │
+ │         │            │              │              │──query────────>│              │
+ │         │            │              │<─DataFrame───│                │              │
+ │         │            │              │              │                │              │
+ │         │            │              │──export──────>│                │              │
+ │         │            │              │              │                │              │
+ │         │            │              │──send────────>│                │              │
+ │         │            │              │              │                │              │
+ │<────────│             │              │              │                │              │
 ```
 
-### Example 3: Multiple Tables
-```bash
-# Export different tables to different files
-python main.py export --table products --output products.xlsx
-python main.py export --table orders --output orders.xlsx
-python main.py export --table customers --output customers.xlsx
+### Key Components
+
+#### 1. **Presentation Layer** (`main.py`)
+- **Responsibility**: Application entry point and user interaction orchestration
+- **Key Functions**:
+  - Initialize services
+  - Coordinate user prompts
+  - Handle connection testing
+  - Manage table discovery
+  - Error handling and user feedback
+
+#### 2. **Application Services** (`src/services/`)
+- **QueryService**: Orchestrates query execution, export, and email sending
+- **ExportService**: Handles Excel and PDF export operations
+- **EmailService**: Manages SMTP email sending with attachments
+
+#### 3. **Domain Layer** (`src/core/`)
+- **DatabaseAdapter**: Abstract interface defining database operations contract
+- **Config**: Configuration management and environment variable handling
+- **PromptService**: User interaction and input collection
+
+#### 4. **Infrastructure Layer** (`src/adapters/`)
+- **PostgreSQLAdapter**: Concrete implementation of DatabaseAdapter for PostgreSQL
+- **DatabaseAdapterFactory**: Factory for creating appropriate database adapters
+
+## 🔧 Low Level Design (LLD)
+
+### Class Diagram
+
+```
+┌─────────────────────────────────────┐
+│      DatabaseAdapter (ABC)         │
+├─────────────────────────────────────┤
+│ + connect() : void                  │
+│ + disconnect() : void               │
+│ + execute_query(query: str)        │
+│   : DataFrame                       │
+│ + list_tables() : List[str]         │
+│ + table_exists(name: str) : bool    │
+│ + create_sample_table(name: str)    │
+│   : void                            │
+│ + __enter__() : DatabaseAdapter     │
+│ + __exit__(...) : void              │
+└──────────────┬──────────────────────┘
+               │ implements
+               │
+┌──────────────▼──────────────────────┐
+│    PostgreSQLAdapter                │
+├─────────────────────────────────────┤
+│ - database_url: str                  │
+│ - engine: Engine                    │
+├─────────────────────────────────────┤
+│ + connect() : void                  │
+│ + disconnect() : void               │
+│ + execute_query(query: str)         │
+│   : DataFrame                       │
+│ + list_tables() : List[str]         │
+│ + table_exists(name: str) : bool    │
+│ + create_sample_table(name: str)    │
+│   : void                            │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│      DatabaseAdapterFactory          │
+├─────────────────────────────────────┤
+│ + create(type: str, url: str)       │
+│   : DatabaseAdapter                 │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│         QueryService                 │
+├─────────────────────────────────────┤
+│ - config: Config                    │
+│ - excel_service: ExcelExportService  │
+│ - pdf_service: PDFExportService     │
+├─────────────────────────────────────┤
+│ + execute_and_export(...) : dict    │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│         EmailService                 │
+├─────────────────────────────────────┤
+│ - smtp_user: str                    │
+│ - smtp_password: str                │
+│ - smtp_host: str                    │
+│ - smtp_port: int                    │
+├─────────────────────────────────────┤
+│ + send_email(...) : void            │
+│ - _convert_to_html(df) : str        │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│        PromptService                 │
+├─────────────────────────────────────┤
+│ + prompt_database_url(...) : str     │
+│ + prompt_query(tables: List) : str  │
+│ + prompt_export_options() : dict   │
+│ + prompt_email_config() : dict      │
+│ + prompt_email_recipients() : List  │
+└─────────────────────────────────────┘
 ```
 
-### Example 4: Organized Output
-```bash
-# Create exports directory
-mkdir -p exports
+### Interface Contracts
 
-# Export to organized location
-python main.py export --table sample_table --output exports/2025-12-05_report.xlsx
+#### DatabaseAdapter Interface
+
+```python
+class DatabaseAdapter(ABC):
+    """Abstract interface for database adapters."""
+    
+    @abstractmethod
+    def connect(self) -> None:
+        """Establish database connection."""
+        
+    @abstractmethod
+    def disconnect(self) -> None:
+        """Close database connection."""
+        
+    @abstractmethod
+    def execute_query(self, query: str) -> pd.DataFrame:
+        """Execute SQL query and return results as DataFrame."""
+        
+    @abstractmethod
+    def list_tables(self) -> List[str]:
+        """List all tables in the database."""
+        
+    @abstractmethod
+    def table_exists(self, table_name: str) -> bool:
+        """Check if table exists."""
+        
+    @abstractmethod
+    def create_sample_table(self, table_name: str) -> None:
+        """Create sample table with dummy data."""
 ```
 
----
+### Design Patterns Implementation
 
-## 🎯 Key Features
+#### 1. Factory Pattern
+**Location**: `src/adapters/database/factory.py`
 
-- ✅ **Single-file application** - Everything in `main.py`
-- ✅ **Simple commands** - `init` and `export` subcommands
-- ✅ **Automatic SQLite detection** - Works with various URL formats
-- ✅ **Excel export** - Clean, formatted Excel files
-- ✅ **Error handling** - Clear error messages
-- ✅ **Environment configuration** - Easy `.env` setup
+```python
+class DatabaseAdapterFactory:
+    @staticmethod
+    def create(database_type: str, database_url: str) -> DatabaseAdapter:
+        """Creates appropriate database adapter based on type."""
+        if database_type in ["postgresql", "postgres"]:
+            return PostgreSQLAdapter(database_url)
+        else:
+            raise ValueError(f"Unsupported database type: {database_type}")
+```
+
+**Benefits**:
+- Centralized adapter creation
+- Easy to extend with new database types
+- Encapsulates creation logic
+
+#### 2. Adapter Pattern
+**Location**: `src/adapters/database/postgresql_adapter.py`
+
+```python
+class PostgreSQLAdapter(DatabaseAdapter):
+    """Adapts PostgreSQL-specific operations to DatabaseAdapter interface."""
+    
+    def execute_query(self, query: str) -> pd.DataFrame:
+        # PostgreSQL-specific implementation
+        with self.engine.connect() as conn:
+            result = conn.execute(text(query))
+            return pd.DataFrame(result.fetchall(), columns=result.keys())
+```
+
+**Benefits**:
+- Unified interface for different databases
+- Isolates database-specific code
+- Enables easy swapping of implementations
+
+#### 3. Dependency Injection
+**Location**: `src/services/query_service.py`
+
+```python
+class QueryService:
+    def __init__(self, config: Optional[Config] = None):
+        self.config = config or Config()  # Dependency injection
+        self.excel_service = ExcelExportService()
+        self.pdf_service = PDFExportService()
+```
+
+**Benefits**:
+- Loose coupling
+- Easy testing (can inject mocks)
+- Flexible configuration
+
+#### 4. Context Manager Pattern
+**Location**: `src/adapters/database/postgresql_adapter.py`
+
+```python
+class PostgreSQLAdapter(DatabaseAdapter):
+    def __enter__(self):
+        self.connect()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.disconnect()
+```
+
+**Benefits**:
+- Automatic resource cleanup
+- Exception-safe connection handling
+- Cleaner code with `with` statements
+
+### Data Structures
+
+#### Query Result Flow
+
+```
+SQL Query → DatabaseAdapter.execute_query()
+              ↓
+         SQLAlchemy Result
+              ↓
+         pandas DataFrame
+              ↓
+    ExportService.export()
+              ↓
+    Excel/PDF File
+              ↓
+    EmailService.send_email()
+              ↓
+    Email with Attachments
+```
+
+#### Configuration Flow
+
+```
+.env file → Config class
+              ↓
+    Environment Variables
+              ↓
+    PromptService (optional override)
+              ↓
+    Service Initialization
+```
+
+### Error Handling Strategy
+
+1. **Connection Errors**: DNS resolution check → Connection attempt → Detailed error messages
+2. **Query Errors**: SQL validation → Execution → DataFrame conversion → Error propagation
+3. **Export Errors**: File path validation → Permission check → Export attempt → Error handling
+4. **Email Errors**: SMTP connection → Authentication → Send attempt → Fallback mechanisms
+
+### Extension Points
+
+1. **New Database Types**: Implement `DatabaseAdapter` interface and add to `DatabaseAdapterFactory`
+2. **New Export Formats**: Create new export service implementing export protocol
+3. **New Email Providers**: Extend `EmailService` with provider-specific logic
+4. **New Prompt Types**: Add methods to `PromptService` for new user interactions
 
 ## 🆘 Need Help?
 
-1. Check the `.env` file configuration
-2. Verify the database file exists
-3. Ensure the table name is correct
-4. Check error messages for specific issues
-5. Review the command help: `python main.py --help`
-
-For more details, see the code comments in `main.py`.
+- Check [docs/QUICK_START.md](docs/QUICK_START.md) for quick setup
+- See [docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md) for complete guide
+- Review [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) for email configuration
+- Browse [docs/GUIDES_INDEX.md](docs/GUIDES_INDEX.md) for all documentation
 
 ---
 
-## Oracle 11g Tool (main1.py)
-
-A single-file Python tool for Oracle 11g databases with Excel/PDF export and email functionality.
-
-### Quick Start
-
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Configure .env file:**
-   ```env
-   ORACLE_HOST=localhost
-   ORACLE_PORT=1521
-   ORACLE_SERVICE_NAME=XE
-   ORACLE_USERNAME=hr
-   ORACLE_PASSWORD=your_password
-   
-   SMTP_USER=your_email@gmail.com
-   SMTP_PASSWORD=your_app_password
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   RECEIVER_EMAIL=recipient@example.com
-   ```
-
-3. **Run query and export:**
-   ```bash
-   python main1.py --query "SELECT COURSE_NAME, COURSE_ID, FEES FROM DUMMY_COURSES" --excel report.xlsx
-   ```
-
-### Features
-
-- ✅ Connect to Oracle 11g database
-- ✅ Execute SQL queries
-- ✅ Export to Excel (`.xlsx`)
-- ✅ Export to PDF (`.pdf`)
-- ✅ Convert to HTML table
-- ✅ Send email with HTML body and attachments
-- ✅ Environment-based configuration
-
-### Documentation
-
-- **Quick Start**: See `QUICK_START_ORACLE.md`
-- **Complete Guide**: See `ORACLE_SETUP_GUIDE.md` (includes database setup, table creation, and step-by-step instructions)
-
-
-
-oracle_db_connection/
-├── main.py              # Single-file application (all code here!)
-├── .env                 # Configuration
-├── requirements.txt     # Dependencies
-├── data/                # Database files
-└── README.md            # Updated documentation
+**For detailed documentation, see the [docs/](docs/) directory.**

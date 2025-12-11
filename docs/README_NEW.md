@@ -1,6 +1,6 @@
 # Database Query, Export, and Email Tool
 
-An interactive Python application for connecting to multiple database types (Oracle, PostgreSQL, SQLite), querying tables, exporting to Excel/PDF, and sending email reports.
+An interactive Python application for connecting to PostgreSQL databases, querying tables, exporting to Excel/PDF, and sending email reports.
 
 ## 🚀 Quick Start
 
@@ -15,35 +15,20 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Step 2: Configure Email (Optional - only if sending emails)
+### Step 2: Run the Application
 
-Create a `.env` file in the project root:
-
-```env
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-```
-
-**Gmail App Password Setup:**
-1. Go to [Google Account Settings](https://myaccount.google.com/) > Security
-2. Enable 2-Step Verification (if not already enabled)
-3. Go to "App Passwords" and generate a new app password
-4. Use that app password in `.env` (not your regular Gmail password)
-
-### Step 3: Run the Application
+**Note:** Email configuration is now prompted interactively when you choose to send emails. You no longer need to configure it in `.env` file.
 
 ```bash
 python main.py
 ```
 
 The application will guide you through:
-1. **Database Selection** - Choose Oracle, PostgreSQL, or SQLite
-2. **Database URL** - Enter connection string
-3. **SQL Query** - Enter your query (supports multi-line)
+1. **Database URL** - Enter PostgreSQL connection string
+2. **Connection Test** - Verify connection and list available tables
+3. **SQL Query** - Enter your query (supports multi-line) or select from tables
 4. **Export Options** - Choose Excel, PDF, or both
-5. **Email Options** - Optionally send email with attachments
+5. **Email Options** - Optionally send email with attachments (prompts for email config)
 
 ## 📖 Usage Guide
 
@@ -53,17 +38,14 @@ When you run `python main.py`, you'll be prompted step-by-step:
 
 ```
 ============================================================
-Database Query, Export, and Email Tool
+PostgreSQL Query, Export, and Email Tool
 ============================================================
 
 ============================================================
-Select Database Type:
+Database Type: PostgreSQL
 ============================================================
-1. Oracle
-2. PostgreSQL
-3. SQLite
+This application supports PostgreSQL database connections.
 ============================================================
-Enter your choice (1-3): 2
 
 ============================================================
 Enter POSTGRESQL Database URL:
@@ -140,41 +122,33 @@ CC emails (comma-separated, or press Enter to skip): archive@example.com
 ✓ Process completed successfully!
 ```
 
-## 🗄️ Database URL Formats
+## 🗄️ PostgreSQL Database URL Format
 
-### Oracle
-```
-oracle://username:password@host:port/service_name
-```
-**Example:**
-```
-oracle://scott:tiger@localhost:1521/XE
-```
-
-### PostgreSQL
 ```
 postgresql://username:password@host:port/database
 ```
-**Example:**
+
+**Examples:**
 ```
 postgresql://user:pass@localhost:5432/mydb
+postgresql://postgres:mypassword@db.example.com:5432/production
+postgres://admin:secret@192.168.1.100:5432/test_db
 ```
 
-### SQLite
+**Alternative format:**
 ```
-sqlite:///path/to/database.db
+postgres://username:password@host:port/database
 ```
-**Example:**
-```
-sqlite:///data/sample.db
-```
+
+Both `postgresql://` and `postgres://` prefixes are supported.
 
 ## 📋 Features
 
-### ✅ Multi-Database Support
-- **Oracle** - Full Oracle 11g+ support
-- **PostgreSQL** - Standard PostgreSQL connections
-- **SQLite** - Local SQLite database files
+### ✅ PostgreSQL Support
+- **PostgreSQL** - Full PostgreSQL database support
+- **Connection Status** - Real-time connection status display
+- **Table Discovery** - Automatic table listing
+- **Sample Tables** - Create sample tables with dummy data
 
 ### ✅ Export Formats
 - **Excel (.xlsx)** - Clean, formatted spreadsheets
@@ -228,8 +202,6 @@ src/
 - pandas >= 2.0.0
 - openpyxl >= 3.1.0
 - python-dotenv >= 1.0.0
-- oracledb >= 2.0.0
-- yagmail >= 0.15.0
 - reportlab >= 4.0.0
 - psycopg2-binary >= 2.9.0
 - sqlalchemy >= 2.0.0
@@ -247,45 +219,36 @@ cp env.example .env
 Edit `.env` with your configuration:
 
 ```env
-# Email Configuration (required only if sending emails)
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_gmail_app_password
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-
-# Database URLs (optional - can also enter interactively)
-ORACLE_DATABASE_URL=oracle://user:pass@host:1521/service_name
+# PostgreSQL Database URL (optional - can also enter interactively)
 POSTGRESQL_DATABASE_URL=postgresql://user:pass@host:5432/database
-SQLITE_DATABASE_URL=sqlite:///path/to/database.db
 ```
 
 **Note:** 
-- Database URLs are **optional** - you can enter them interactively or configure in `.env`
+- Database URL is **optional** - you can enter it interactively or configure in `.env`
 - If database URL is set in `.env`, the app will ask if you want to use it
-- Email configuration is required only if you plan to send emails
+- **Email configuration is now prompted interactively** - no need to configure in `.env`
 
 ## 💡 Usage Examples
 
 ### Example 1: Export to Excel Only
 
 ```
-1. Select database: PostgreSQL
-2. Enter URL: postgresql://user:pass@localhost:5432/mydb
-3. Enter query: SELECT * FROM products WHERE price > 100
-4. Export option: Excel only
-5. Output path: products.xlsx
-6. Send email: No
+1. Enter URL: postgresql://user:pass@localhost:5432/mydb
+2. Enter query: SELECT * FROM products WHERE price > 100
+3. Export option: Excel only
+4. Output path: products.xlsx
+5. Send email: No
 ```
 
 ### Example 2: Export to PDF and Send Email
 
 ```
-1. Select database: Oracle
-2. Enter URL: oracle://scott:tiger@localhost:1521/XE
-3. Enter query: SELECT * FROM employees WHERE department = 'Sales'
-4. Export option: PDF only
-5. Output path: sales_report.pdf
-6. Send email: Yes
+1. Enter URL: postgresql://user:pass@localhost:5432/mydb
+2. Enter query: SELECT * FROM employees WHERE department = 'Sales'
+3. Export option: PDF only
+4. Output path: sales_report.pdf
+5. Send email: Yes
+6. Email config: (prompted interactively)
 7. Subject: Sales Team Report
 8. Recipients: manager@company.com, hr@company.com
 ```
@@ -313,27 +276,22 @@ END
 
 ### Database Connection Errors
 
-**Oracle:**
-- Verify Oracle client libraries are installed
-- Check service name/SID is correct
-- Ensure firewall allows connection
-
 **PostgreSQL:**
 - Verify PostgreSQL server is running
 - Check database name and credentials
 - Ensure `psycopg2-binary` is installed
-
-**SQLite:**
-- Verify file path is correct
-- Ensure file exists and is readable
-- Use absolute path if relative path fails
+- For cloud databases (Neon, Supabase, etc.):
+  - Verify the connection string is correct
+  - Check if your IP is whitelisted
+  - Ensure the database instance is active
+  - Check DNS resolution if hostname cannot be resolved
 
 ### Email Sending Errors
 
 **"Authentication failed":**
 - Use Gmail App Password, not regular password
 - Enable 2-Step Verification in Google Account
-- Verify SMTP credentials in `.env`
+- Verify SMTP credentials entered during prompt
 
 **"Connection refused":**
 - Check SMTP host and port
@@ -351,12 +309,14 @@ END
 
 - ✅ **Clean Architecture** - Separation of concerns
 - ✅ **SOLID Principles** - Maintainable, extensible code
-- ✅ **Multi-Database** - Oracle, PostgreSQL, SQLite support
+- ✅ **PostgreSQL Support** - Full PostgreSQL database support
 - ✅ **Interactive Prompts** - User-friendly interface
 - ✅ **Multiple Recipients** - Send emails to multiple addresses (TO and CC)
 - ✅ **Flexible Exports** - Excel, PDF, or both
 - ✅ **Error Handling** - Clear error messages
 - ✅ **Type Hints** - Better code documentation
+- ✅ **Table Discovery** - Automatic table listing
+- ✅ **Connection Status** - Real-time connection feedback
 
 ## 📝 Project Structure
 
@@ -365,21 +325,27 @@ oracle_db_connection/
 ├── main.py                 # Main entry point
 ├── src/                    # Source code
 │   ├── core/              # Core interfaces and config
-│   ├── adapters/         # Database adapters
+│   ├── adapters/         # Database adapters (PostgreSQL)
 │   └── services/         # Business logic services
-├── .env                   # Configuration (create from .env.example)
-├── .env.example          # Example configuration
+├── docs/                  # Documentation
+│   ├── QUICK_START.md
+│   ├── SETUP_GUIDE.md
+│   ├── EMAIL_SETUP.md
+│   └── GUIDES_INDEX.md
+├── env.example           # Example configuration
 ├── requirements.txt      # Python dependencies
-└── README_NEW.md        # This file
+└── README.md            # Main README
 ```
 
 ## 🆘 Need Help?
 
-1. Check `.env` file configuration (for email)
-2. Verify database URL format matches examples
-3. Ensure all dependencies are installed
-4. Check error messages for specific issues
-5. Review database connection requirements
+1. Check database URL format matches examples
+2. Ensure all dependencies are installed
+3. Check error messages for specific issues
+4. Review database connection requirements
+5. See [docs/QUICK_START.md](QUICK_START.md) for quick setup
+6. See [docs/SETUP_GUIDE.md](SETUP_GUIDE.md) for complete guide
+7. See [docs/EMAIL_SETUP.md](EMAIL_SETUP.md) for email configuration
 
 ---
 

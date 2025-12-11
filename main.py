@@ -51,7 +51,7 @@ def main():
             print("\n📋 Checking for tables in database...")
             try:
                 available_tables = db_adapter.list_tables()
-                
+        
                 if available_tables:
                     print(f"✅ Found {len(available_tables)} table(s) in database:")
                     for i, table in enumerate(available_tables, 1):
@@ -128,7 +128,7 @@ def main():
         )
 
         if result["success"]:
-            return 0
+        return 0
         else:
             return 1
 

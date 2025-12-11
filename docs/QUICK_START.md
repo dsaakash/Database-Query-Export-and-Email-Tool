@@ -33,16 +33,9 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 ```
 
-**Database URLs (Optional - can also enter interactively):**
+**PostgreSQL Database URL (Optional - can also enter interactively):**
 ```env
-# Oracle
-ORACLE_DATABASE_URL=oracle://user:pass@host:1521/service_name
-
-# PostgreSQL
 POSTGRESQL_DATABASE_URL=postgresql://user:pass@host:5432/database
-
-# SQLite
-SQLITE_DATABASE_URL=sqlite:///path/to/database.db
 ```
 
 **Note:** If database URL is set in `.env`, the app will ask if you want to use it.
@@ -60,21 +53,19 @@ python main.py
 ## 📝 Example Usage
 
 ```
-1. Select database: 2 (PostgreSQL)
-2. Database URL: postgresql://user:pass@localhost:5432/mydb
-3. Query: SELECT * FROM users LIMIT 10
+1. Database URL: postgresql://user:pass@localhost:5432/mydb
+2. Query: SELECT * FROM users LIMIT 10
    (Type 'END' to finish)
-4. Export: 1 (Excel only)
-5. Output: report.xlsx
-6. Email: no
+3. Export: 1 (Excel only)
+4. Output: report.xlsx
+5. Email: no
 ```
 
 ## 🎯 Common Use Cases
 
 ### Export to Excel Only
 ```
-Database: Your choice
-URL: Your database URL
+URL: postgresql://user:pass@host:5432/database
 Query: Your SQL query
 Export: Option 1 (Excel only)
 Email: no
@@ -82,8 +73,7 @@ Email: no
 
 ### Export and Email
 ```
-Database: Your choice
-URL: Your database URL
+URL: postgresql://user:pass@host:5432/database
 Query: Your SQL query
 Export: Option 1 or 3
 Email: yes
@@ -94,7 +84,10 @@ CC Recipients: cc1@example.com, cc2@example.com (optional, press Enter to skip)
 
 ## 📚 Full Documentation
 
-For detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md)
+For detailed setup instructions, see:
+- [SETUP_GUIDE.md](SETUP_GUIDE.md) - Complete setup guide
+- [EMAIL_SETUP.md](EMAIL_SETUP.md) - Email configuration
+- [GUIDES_INDEX.md](GUIDES_INDEX.md) - All documentation
 
 ## ⚡ Quick Troubleshooting
 

@@ -34,7 +34,7 @@ Quick reference to all available guides and documentation.
 
 ### 🛠️ Testing
 
-#### [test_email.py](test_email.py)
+#### [../test_email.py](../test_email.py)
 **Email configuration test script**
 - Test your email setup before using main application
 - Detailed error messages and troubleshooting
@@ -114,12 +114,15 @@ Quick reference to all available guides and documentation.
 ```
 oracle_db_connection/
 ├── README.md              # Main documentation (overview)
-├── QUICK_START.md         # Quick start guide
-├── SETUP_GUIDE.md         # Complete setup guide
-├── EMAIL_SETUP.md         # Email configuration guide
-├── GUIDES_INDEX.md        # This file (guide index)
-├── test_email.py          # Email test script
-└── README_NEW.md          # Detailed feature documentation
+├── docs/                  # Documentation directory
+│   ├── README.md         # Documentation index
+│   ├── QUICK_START.md    # Quick start guide
+│   ├── SETUP_GUIDE.md    # Complete setup guide
+│   ├── EMAIL_SETUP.md    # Email configuration guide
+│   ├── GUIDES_INDEX.md   # This file (guide index)
+│   └── README_NEW.md     # Detailed feature documentation
+├── test_email.py         # Email test script
+└── env.example           # Example environment configuration
 ```
 
 ---

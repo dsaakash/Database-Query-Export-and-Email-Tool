@@ -1,6 +1,6 @@
 # Complete Setup and Usage Guide
 
-This guide will walk you through setting up and running the Database Query, Export, and Email Tool.
+This guide will walk you through setting up and running the PostgreSQL Query, Export, and Email Tool.
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ Before you begin, ensure you have:
 - **Python 3.8 or higher** installed on your system
 - **pip** (Python package installer)
 - **Internet connection** (for installing packages and sending emails)
-- **Database access** (Oracle, PostgreSQL, or SQLite database)
+- **PostgreSQL database access**
 
 ### Check Python Version
 
@@ -67,7 +67,7 @@ This will install:
 - pandas (data manipulation)
 - openpyxl (Excel export)
 - python-dotenv (environment variables)
-- oracledb (Oracle database)
+- psycopg2-binary (PostgreSQL database)
 - yagmail (email sending)
 - reportlab (PDF export)
 - psycopg2-binary (PostgreSQL)
@@ -247,13 +247,10 @@ Database Query, Export, and Email Tool
 ============================================================
 
 ============================================================
-Select Database Type:
+Database Type: PostgreSQL
 ============================================================
-1. Oracle
-2. PostgreSQL
-3. SQLite
+This application supports PostgreSQL database connections.
 ============================================================
-Enter your choice (1-3): 2
 
 ============================================================
 Database URL found in .env file
@@ -345,12 +342,11 @@ CC emails (comma-separated, or press Enter to skip): archive@company.com
 **Use Case:** You just want to export query results to Excel file.
 
 ```
-1. Select database: 3 (SQLite)
-2. Database URL: sqlite:///data/sample.db
-3. Query: SELECT * FROM products WHERE price > 100
-4. Export option: 1 (Excel only)
-5. Output path: products.xlsx
-6. Send email: no
+1. Database URL: postgresql://user:pass@localhost:5432/mydb
+2. Query: SELECT * FROM products WHERE price > 100
+3. Export option: 1 (Excel only)
+4. Output path: products.xlsx
+5. Send email: no
 ```
 
 **Result:** Creates `products.xlsx` file in current directory.
@@ -362,14 +358,13 @@ CC emails (comma-separated, or press Enter to skip): archive@company.com
 **Use Case:** Generate PDF report and email it to team.
 
 ```
-1. Select database: 1 (Oracle)
-2. Database URL: oracle://scott:tiger@localhost:1521/XE
-3. Query: SELECT * FROM employees WHERE department = 'Sales'
-4. Export option: 2 (PDF only)
-5. Output path: sales_team.pdf
-6. Send email: yes
-7. Subject: Sales Team Report - Q1 2024
-8. Recipients: sales-manager@company.com, hr@company.com
+1. Database URL: postgresql://user:pass@localhost:5432/mydb
+2. Query: SELECT * FROM employees WHERE department = 'Sales'
+3. Export option: 2 (PDF only)
+4. Output path: sales_team.pdf
+5. Send email: yes
+6. Subject: Sales Team Report - Q1 2024
+7. Recipients: sales-manager@company.com, hr@company.com
 ```
 
 **Result:** Creates `sales_team.pdf` and sends email with PDF attachment.
@@ -381,15 +376,14 @@ CC emails (comma-separated, or press Enter to skip): archive@company.com
 **Use Case:** Export to both Excel and PDF, then email both files.
 
 ```
-1. Select database: 2 (PostgreSQL)
-2. Database URL: postgresql://user:pass@localhost:5432/mydb
-3. Query: SELECT * FROM orders WHERE order_date = CURRENT_DATE
-4. Export option: 3 (Both Excel and PDF)
-5. Excel path: daily_orders.xlsx
-6. PDF path: daily_orders.pdf
-7. Send email: yes
-8. Subject: Daily Orders Report
-9. Recipients: operations@company.com
+1. Database URL: postgresql://user:pass@localhost:5432/mydb
+2. Query: SELECT * FROM orders WHERE order_date = CURRENT_DATE
+3. Export option: 3 (Both Excel and PDF)
+4. Excel path: daily_orders.xlsx
+5. PDF path: daily_orders.pdf
+6. Send email: yes
+7. Subject: Daily Orders Report
+8. Recipients: operations@company.com
 ```
 
 **Result:** Creates both files and sends email with both attachments.
@@ -423,22 +417,9 @@ END
 
 ---
 
-## Database URL Examples
+## PostgreSQL Database URL Examples
 
-### Oracle
-
-```
-oracle://username:password@host:port/service_name
-```
-
-**Examples:**
-```
-oracle://scott:tiger@localhost:1521/XE
-oracle://hr:hr123@db.company.com:1521/ORCL
-oracle://admin:secret@192.168.1.100:1521/PDB1
-```
-
-### PostgreSQL
+### Format
 
 ```
 postgresql://username:password@host:port/database
@@ -449,22 +430,16 @@ postgresql://username:password@host:port/database
 postgresql://postgres:mypassword@localhost:5432/mydb
 postgresql://admin:secret@db.company.com:5432/production
 postgresql://user:pass@192.168.1.100:5432/test_db
+postgresql://user:pass@ep-withered-term-a82thhxz-pooler.eastus2.azure.neon.tech:5432/neondb
 ```
 
-### SQLite
+### Alternative Format
 
 ```
-sqlite:///path/to/database.db
+postgres://username:password@host:port/database
 ```
 
-**Examples:**
-```
-sqlite:///data/sample.db
-sqlite:///home/user/databases/company.db
-sqlite:///C:/Users/John/Documents/data.db  (Windows)
-```
-
-**Note:** Use forward slashes (`/`) even on Windows, or use absolute paths.
+Both `postgresql://` and `postgres://` prefixes are supported.
 
 ---
 
@@ -514,25 +489,14 @@ sqlite:///C:/Users/John/Documents/data.db  (Windows)
    # Check if PostgreSQL is running
    ps aux | grep postgres
    ```
-2. Check database URL format
+2. Check database URL format (must start with `postgresql://` or `postgres://`)
 3. Verify username, password, and database name
 4. Ensure `psycopg2-binary` is installed: `pip install psycopg2-binary`
-
-#### Problem: "Failed to connect to Oracle database"
-
-**Solutions:**
-1. Verify Oracle client libraries are installed
-2. Check service name/SID is correct
-3. Verify host, port, and credentials
-4. Test connection with Oracle SQL Developer first
-
-#### Problem: "Failed to connect to SQLite database"
-
-**Solutions:**
-1. Verify file path is correct
-2. Check file exists: `ls -la path/to/database.db`
-3. Verify file permissions: `chmod 644 database.db`
-4. Use absolute path if relative path doesn't work
+5. For cloud databases (Neon, Supabase, etc.):
+   - Verify the connection string is correct
+   - Check if your IP is whitelisted
+   - Ensure the database instance is active
+6. Check DNS resolution if hostname cannot be resolved
 
 ### Export Issues
 
@@ -591,17 +555,11 @@ SMTP_PORT=587
 
 ### Database URL Configuration (.env)
 
-You can optionally configure database URLs in `.env`:
+You can optionally configure PostgreSQL database URL in `.env`:
 
 ```env
-# Oracle
-ORACLE_DATABASE_URL=oracle://username:password@host:1521/service_name
-
 # PostgreSQL
 POSTGRESQL_DATABASE_URL=postgresql://username:password@host:5432/database
-
-# SQLite
-SQLITE_DATABASE_URL=sqlite:///path/to/database.db
 ```
 
 If set, the app will ask if you want to use the URL from `.env` or enter manually.
